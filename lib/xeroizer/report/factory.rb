@@ -1,6 +1,7 @@
 require 'xeroizer/application_http_proxy' 
 require 'xeroizer/report/base'
 require 'xeroizer/report/aged_receivables_by_contact'
+require 'xeroizer/report/aged_payables_by_contact'
 
 module Xeroizer
   module Report
@@ -26,7 +27,7 @@ module Xeroizer
           response = Response.parse(response_xml, options) do | inner_response, elements |
             parse_reports(inner_response, elements)
           end
-          response.response_items.first # there is is only one
+          response.response_items.first # there is only one
         end
       
         def api_controller_name

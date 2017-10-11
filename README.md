@@ -519,7 +519,7 @@ All Xero reports except GST report can be accessed through Xeroizer.
 
 Currently, only generic report access functionality exists. This will be extended
 to provide a more report-specific version of the data in the future (public submissions
-are welcome).
+are welcome).  For a full list of parameters for each report can be found in ![Xero's official API documentation](https://developer.xero.com/documentation/api/reports).
 
 Reports are accessed like the following example:
 
@@ -557,7 +557,21 @@ trial_balance.rows.each do | row |
 			
 	end
 end
+
+# AgedReceivableByContact Report (contactID must be specified)
+contact = xero.Contact.first
+aged_receivable = xero.AgedReceivablesByContact.get(:contactID => contact.id)
+
+# ProfitAndLoss Report (with tracking category)
+tracking_category = xero.TrackingCategory.first
+profile_loss = xero.ProfitAndLoss.get(
+										:fromDate 				=> DateTime.new(2017,1,3),
+										:toDate 				=> DateTime.new(2017,31,3),
+										:trackingCategoryID 	=> tracking_category.id
+									)
+
 ```
+
 
 Xero API Rate Limits
 --------------------
