@@ -143,12 +143,19 @@ module Xeroizer
     end
 
     def message
+      if @invoice.status == "PAID"
+        "Invoice status is PAID, you must remove the payments before making changes to the invoice"
+      end
+
       case @new_status
         when 'DELETED', 'VOIDED'
           unless @invoice.payments.size == 0
             "There must be no payments in this invoice to change to '#{@new_status}'"
           end
-
+        when 'AUTHORISED'
+          unless @invoice.due_date
+            "DueDate must be set on invoice to change to #{@new_status}"
+          end
       end
     end
 
