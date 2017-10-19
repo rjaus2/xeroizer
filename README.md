@@ -546,7 +546,6 @@ invoice = xero.Invoice.find(invoice.id)
 # Invoice status is now "PAID" & Payment details have been returned as well
 invoice.status
 invoice.payments.first
-
 ```
 
 
