@@ -1,6 +1,6 @@
 # Press Me
 
-[![Fork For Keys Badge](https://raw.githubusercontent.com/rjaus/xeroizer/master/forkeys-button.png)](https://github.com/rjaus/xeroizer/fork)
+[![Fork For Keys Badge](https://raw.githubusercontent.com/rjaus/xeroizer/forkers/forkeys-button.png)](https://github.com/rjaus/xeroizer/fork)
 
 
 [![Fork For Keys Badge](https://img.shields.io/badge/Fork-ForKeys.io-red.svg)](https://github.com/rjaus/xeroizer/fork)
