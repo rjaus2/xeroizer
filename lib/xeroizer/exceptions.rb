@@ -97,6 +97,8 @@ module Xeroizer
     
   end
 
+  class RecordInvalid < XeroizerError; end
+
   class SettingTotalDirectlyNotSupported < XeroizerError
     
     def initialize(attribute_name)
@@ -153,5 +155,7 @@ module Xeroizer
     end
 
   end
+
+  class InvalidClientError < XeroizerError; end
   
 end

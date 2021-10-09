@@ -6,8 +6,10 @@ module Xeroizer
     include Http
     extend Record::ApplicationHelper
 
-    attr_reader :client, :xero_url, :logger, :rate_limit_sleep, :rate_limit_max_attempts,
+    attr_reader :client, :logger, :rate_limit_sleep, :rate_limit_max_attempts,
                 :default_headers, :unitdp, :before_request, :after_request, :around_request, :nonce_used_max_attempts
+
+    attr_accessor :xero_url
 
     extend Forwardable
     def_delegators :client, :access_token
@@ -15,8 +17,9 @@ module Xeroizer
     record :Account
     record :Allocation
     record :Attachment
-    record :BrandingTheme
     record :Balances
+    record :BatchPayment
+    record :BrandingTheme
     record :Contact
     record :ContactGroup
     record :CreditNote
@@ -24,15 +27,20 @@ module Xeroizer
     record :Employee
     record :ExpenseClaim
     record :Invoice
+    record :InvoiceReminder
+    record :HistoryRecord
+    record :OnlineInvoice
     record :Item
     record :Journal
     record :LineItem
     record :ManualJournal
     record :Organisation
     record :Payment
+    record :PaymentService
     record :Prepayment
     record :Overpayment
     record :PurchaseOrder
+    record :Quote
     record :Receipt
     record :RepeatingInvoice
     record :Schedule
@@ -40,6 +48,7 @@ module Xeroizer
     record :TrackingCategory
     record :TrackingCategoryChild
     record :BankTransaction
+    record :BankTransfer
     record :User
 
     report :AgedPayablesByContact
@@ -58,7 +67,8 @@ module Xeroizer
       # @see PublicApplication
       # @see PrivateApplication
       # @see PartnerApplication
-      def initialize(consumer_key, consumer_secret, options = {})
+      def initialize(client, options = {})
+        raise Xeroizer::InvalidClientError.new unless [OAuth, OAuth2].member?(client.class)
         @xero_url = options[:xero_url] || "https://api.xero.com/api.xro/2.0"
         @rate_limit_sleep = options[:rate_limit_sleep] || false
         @rate_limit_max_attempts = options[:rate_limit_max_attempts] || 5
@@ -67,7 +77,7 @@ module Xeroizer
         @before_request = options.delete(:before_request)
         @after_request = options.delete(:after_request)
         @around_request = options.delete(:around_request)
-        @client = OAuth.new(consumer_key, consumer_secret, options.merge({default_headers: default_headers}))
+        @client = client
         @logger = options[:logger] || false
         @unitdp = options[:unitdp] || 2
       end
@@ -77,6 +87,6 @@ module Xeroizer
         xero_client.xero_url = options[:xero_url] || "https://api.xero.com/payroll.xro/1.0"
         @payroll ||= PayrollApplication.new(xero_client)
       end
-          
+
   end
 end

@@ -1,10 +1,10 @@
-require 'test_helper'
+require 'unit_test_helper'
 
 class ContactTest < Test::Unit::TestCase
   include TestHelper
 
   def setup
-    @client = Xeroizer::PublicApplication.new(CONSUMER_KEY, CONSUMER_SECRET)
+    @client = Xeroizer::OAuth2Application.new(CLIENT_ID, CLIENT_SECRET)
   end
 
   context "contact validators" do
@@ -17,6 +17,24 @@ class ContactTest < Test::Unit::TestCase
       assert_equal("can't be blank", blank_error)
 
       contact.name = "SOMETHING"
+      assert_equal(true, contact.valid?)
+      assert_equal(0, contact.errors.size)
+    end
+
+    should "be able to have no name if it has a contact_id" do
+      contact = @client.Contact.build
+
+      assert_equal(false, contact.valid?)
+      contact.contact_id = "1-2-3"
+      assert_equal(true, contact.valid?)
+      assert_equal(0, contact.errors.size)
+    end
+
+    should "be able to have no name if it has a contact_number" do
+      contact = @client.Contact.build
+
+      assert_equal(false, contact.valid?)
+      contact.contact_number = "abc123"
       assert_equal(true, contact.valid?)
       assert_equal(0, contact.errors.size)
     end
@@ -64,15 +82,6 @@ class ContactTest < Test::Unit::TestCase
               :default_currency]
 
       assert_equal(contact.attributes.keys, keys)
-    end
-
-    should "be able to have no name if has a contact_id" do
-      contact = @client.Contact.build
-
-      assert_equal(false, contact.valid?)
-      contact.contact_id = "1-2-3"
-      assert_equal(true, contact.valid?)
-      assert_equal(0, contact.errors.size)
     end
 
     it "parses extra attributes when present" do

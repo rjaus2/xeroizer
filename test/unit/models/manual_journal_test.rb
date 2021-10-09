@@ -1,10 +1,10 @@
-require 'test_helper'
+require 'unit_test_helper'
 
 class ManualJournalTest < Test::Unit::TestCase
   include TestHelper
 
   def setup
-    @client = Xeroizer::PublicApplication.new(CONSUMER_KEY, CONSUMER_SECRET)
+    @client = Xeroizer::OAuth2Application.new(CLIENT_ID, CLIENT_SECRET)
     mock_api('ManualJournals')
   end
 

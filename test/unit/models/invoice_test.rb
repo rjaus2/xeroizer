@@ -1,10 +1,10 @@
-require 'test_helper'
+require 'unit_test_helper'
 
 class InvoiceTest < Test::Unit::TestCase
   include TestHelper
-  
+
   def setup
-    @client = Xeroizer::PublicApplication.new(CONSUMER_KEY, CONSUMER_SECRET)
+    @client = Xeroizer::OAuth2Application.new(CLIENT_ID, CLIENT_SECRET)
     mock_api('Invoices')
     @invoice = @client.Invoice.first
   end
@@ -26,7 +26,7 @@ class InvoiceTest < Test::Unit::TestCase
   end
 
   context "invoice types" do
-    
+
     should "have helpers to determine invoice type" do
       @invoice.type = 'ACCREC'
       assert_equal(true, @invoice.accounts_receivable?)
@@ -36,11 +36,11 @@ class InvoiceTest < Test::Unit::TestCase
       assert_equal(false, @invoice.accounts_receivable?)
       assert_equal(true, @invoice.accounts_payable?)
     end
-    
+
   end
-  
+
   context "invoice totals" do
-    
+
     should "large-scale testing from API XML" do
       invoices = @client.Invoice.all
       invoices.each do | invoice |
@@ -51,7 +51,7 @@ class InvoiceTest < Test::Unit::TestCase
     end
 
   end
-  
+
   context "invoice validations" do
 
     should "build an invalid invoice if there are no attributes" do
@@ -59,7 +59,7 @@ class InvoiceTest < Test::Unit::TestCase
     end
 
     should "build a valid DRAFT invoice with minimal attributes" do
-      invoice = @client.Invoice.build :type => "ACCREC", :contact => { :name => "ABC Limited" }
+      invoice = @client.Invoice.build :type => "ACCREC", :date => Date.today, :contact => { :name => "ABC Limited" }
       assert_equal(true, invoice.valid?)
     end
 
@@ -105,7 +105,7 @@ class InvoiceTest < Test::Unit::TestCase
   end
 
   context "contact shortcuts" do
-    
+
     should "have valid #contact_name and #contact_id without downloading full invoice" do
       invoices = @client.Invoice.all
       invoices.each do |invoice|
@@ -114,13 +114,13 @@ class InvoiceTest < Test::Unit::TestCase
         assert_equal(false, invoice.complete_record_downloaded?)
       end
     end
-    
+
   end
 
   context "updated date" do
     should "get the updated date as utc" do
       invoices = @client.Invoice.all
-      
+
       assert_equal(Time.parse("2008-9-16T10:28:51.5Z"), invoices[0].updated_date_utc)
 
       invoices.each do |invoice|

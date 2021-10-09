@@ -1,10 +1,10 @@
-require 'test_helper'
+require 'unit_test_helper'
 
 class RepeatingInvoiceTest < Test::Unit::TestCase
   include TestHelper
 
   def setup
-    @client = Xeroizer::PublicApplication.new(CONSUMER_KEY, CONSUMER_SECRET)
+    @client = Xeroizer::OAuth2Application.new(CLIENT_ID, CLIENT_SECRET)
     mock_api('RepeatingInvoices')
   end
 
@@ -18,7 +18,7 @@ class RepeatingInvoiceTest < Test::Unit::TestCase
       repeating_invoice = repeating_invoices.first
 
       assert_equal "PowerDirect", repeating_invoice.contact_name
-      assert_equal BigDecimal.new(90), repeating_invoice.total
+      assert_equal BigDecimal(90), repeating_invoice.total
       assert_equal true, repeating_invoice.accounts_payable?
 
       schedule = repeating_invoice.schedule

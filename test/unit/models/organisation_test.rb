@@ -1,10 +1,10 @@
-require 'test_helper'
+require 'unit_test_helper'
 
 class OrganisationTest < Test::Unit::TestCase
   include TestHelper
 
   def setup
-    @client = Xeroizer::PublicApplication.new(CONSUMER_KEY, CONSUMER_SECRET)
+    @client = Xeroizer::OAuth2Application.new(CLIENT_ID, CLIENT_SECRET)
   end
 
   context "sales_tax_basis_validations" do
@@ -35,4 +35,18 @@ class OrganisationTest < Test::Unit::TestCase
     end
   end
 
+  context "parse response" do
+    it "includes payment_terms" do
+      @instance = Xeroizer::Record::OrganisationModel.new(nil, "Organisation")
+      some_xml = get_record_xml("organisations")
+
+      result = @instance.parse_response(some_xml)
+      organisation = result.response_items.first
+
+      assert_equal(organisation.payment_terms.bills.day, "4")
+      assert_equal(organisation.payment_terms.bills.type, "OFFOLLOWINGMONTH")
+      assert_equal(organisation.payment_terms.sales.day, "2")
+      assert_equal(organisation.payment_terms.sales.type, "OFFOLLOWINGMONTH")
+    end
+  end
 end
