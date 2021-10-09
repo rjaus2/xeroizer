@@ -26,7 +26,14 @@
 
 ```ruby
 
+require 'rubygems'
+require 'xeroizer'
 
+# Create client (used to communicate with the API).
+client = Xeroizer::OAuth2Application.new(YOUR_OAUTH2_CLIENT_ID, YOUR_OAUTH2_CLIENT_SECRET)
+
+# Retrieve list of contacts (note: all communication must be made through the client).
+contacts = client.Contact.all(:order => 'Name')
 
 
 ```
